@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Récupération de l'IP</title>
+</head>
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Obtenir l'adresse IP de l'utilisateur
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ip = data.ip;
+
+                    // Envoyer les données au serveur Flask
+                    fetch('/log_ip', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ip: ip })
+                    }).then(response => response.json())
+                      .then(data => {
+                          console.log(data.message);
+                      }).catch(error => {
+                          console.error('Error:', error);
+                      });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaYe</title>
+    <link rel="icon" type="image/png" href="../Images\Logo.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="chat" class="chat">
+        <div id="messages"></div>
+        <div id="message-container">
+            <input id="message" class="msgbox" type="text" placeholder="Votre message...">
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
